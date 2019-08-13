@@ -1,6 +1,5 @@
 import tweepy
 
-
 def process_page(page):
   # Process page sums the likes on the tweets on this page of results
     sum = 0
@@ -13,8 +12,11 @@ def get_popularity(api, follower):
   # Popularity score is the sum of all likes on the last 100 tweets by the person
 
     sum = 0
-    for page in tweepy.Cursor(api.user_timeline, id=follower.id).pages(5):
-        sum += process_page(page)
+    try:
+        for page in tweepy.Cursor(api.user_timeline, id=follower.id).pages(5):
+            sum += process_page(page)
+    except (Exception, tweepy.TweepError) as error:
+        print(f'Error getting user timeline for{follower.screen_name} - probably because a protected user. Error: {error}')
     return sum
 
 
@@ -42,6 +44,7 @@ def make_friends(api, strangers):
   # follows list of followers
     friends = []
     for stranger in strangers:
+        print("creating friendship with ",stranger.screen_name)
         friend = api.create_friendship(stranger.id)
         if friend:
             friends.append(friend)
@@ -51,7 +54,7 @@ def make_friends(api, strangers):
 
 def make_new_friends(api, my_id, recent_followers):
   # Follows popular new followers
-
+    friend_ids=[]
     # Get list of friends ids
     friend_ids = api.friends_ids(user_id=my_id)
     # Get popular strangers
