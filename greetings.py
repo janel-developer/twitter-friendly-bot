@@ -102,7 +102,7 @@ recent_followers = api.followers(count=50)
 # Use twitterbot_dev db to only send hello to new followers
 new_followers = get_new_followers(recent_followers)
 # To avoid flooding anyone's notifications, only post a status message to 10 people
-new_followers = new_followers[0:9]
+new_followers = new_followers[0:4]
 
 # Say hi to new followers
 say_hi(new_followers)
@@ -111,7 +111,7 @@ say_hi(new_followers)
 update_acknowledged_followers_in_db(new_followers)
 
 # If we have new followers, make friends
-if len(new_followers) > 0:
+if len(recent_followers) > 0:
     # me and my id
     # Used to get my friends from twitter api
     me = api.get_user(screen_name=MY_SCREEN_NAME)
